@@ -7,10 +7,13 @@ CREATE TABLE IF NOT EXISTS public.flights
 (
     id_flights integer NOT NULL,
     id_plane integer,
-    id_rout integer,
+    country_plan text,
+    "to" text,
+    "from" text,
     start time with time zone,
     "end" time with time zone,
-    free_tickets integer,
+    stop integer,
+    price double precision,
     PRIMARY KEY (id_flights)
 );
 
@@ -33,60 +36,28 @@ CREATE TABLE IF NOT EXISTS public.request_history
 
 CREATE TABLE IF NOT EXISTS public.favorite_city
 (
-    id_city integer NOT NULL,
+    city_name text NOT NULL,
     id_user integer NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS public.city
 (
-    id_city integer NOT NULL,
-    name text,
-    description text,
+    name text NOT NULL,
     visible_count integer,
-    id_popular_location integer,
-    PRIMARY KEY (id_city)
-);
-
-CREATE TABLE IF NOT EXISTS public.popular_places
-(
-    id_place integer NOT NULL,
-    id_city integer,
-    name text,
-    located text,
-    path_img text,
-    description text,
-    PRIMARY KEY (id_place)
-);
-
-CREATE TABLE IF NOT EXISTS public.route
-(
-    id_route integer NOT NULL,
-    id_from integer,
-    id_to integer,
-    stop integer,
-    price integer,
-    PRIMARY KEY (id_route)
-);
-
-CREATE TABLE IF NOT EXISTS public.plans
-(
-    id_plan integer NOT NULL,
-    contry text,
-    max_ticket integer,
-    PRIMARY KEY (id_plan)
+    PRIMARY KEY (name)
 );
 
 ALTER TABLE IF EXISTS public.flights
-    ADD FOREIGN KEY (id_rout)
-    REFERENCES public.route (id_route) MATCH SIMPLE
+    ADD FOREIGN KEY ("to")
+    REFERENCES public.city (name) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION
     NOT VALID;
 
 
 ALTER TABLE IF EXISTS public.flights
-    ADD FOREIGN KEY (id_plane)
-    REFERENCES public.plans (id_plan) MATCH SIMPLE
+    ADD FOREIGN KEY ("from")
+    REFERENCES public.city (name) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION
     NOT VALID;
@@ -109,32 +80,8 @@ ALTER TABLE IF EXISTS public.favorite_city
 
 
 ALTER TABLE IF EXISTS public.favorite_city
-    ADD FOREIGN KEY (id_city)
-    REFERENCES public.city (id_city) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
-
-
-ALTER TABLE IF EXISTS public.popular_places
-    ADD FOREIGN KEY (id_city)
-    REFERENCES public.city (id_city) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
-
-
-ALTER TABLE IF EXISTS public.route
-    ADD FOREIGN KEY (id_from)
-    REFERENCES public.city (id_city) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
-
-
-ALTER TABLE IF EXISTS public.route
-    ADD FOREIGN KEY (id_to)
-    REFERENCES public.city (id_city) MATCH SIMPLE
+    ADD FOREIGN KEY (city_name)
+    REFERENCES public.city (name) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION
     NOT VALID;
