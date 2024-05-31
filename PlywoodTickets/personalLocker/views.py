@@ -8,8 +8,8 @@ from .forms import UserRegistrationForm
 from django.views import generic
 class UserApiView(APIView):
     permission_classes = [permissions.IsAuthenticated]
-    def get(self, request, *args, **kwargs):
-        print(request.user.id)
+    #def get(self, request, *args, **kwargs):
+    #    print(request.user.id)
     def put(self, request, *args, **kwargs):
         print(request.user.id)
         user=CustomUser.objects.get(pk=request.user.id)
@@ -24,13 +24,14 @@ class UserApiView(APIView):
 
 # Create your views here.
 def index(request):
-    print(request.user.id)
-    return render(request,'index.html')
-# class UserData(generic.V):
-#     model = UserPersonalData
-#     def get_context_data(self, **kwargs):
-#         context = super(UserData, self).get_context_data(**kwargs)
-#         return context
+    ID=request.user.id
+    user=CustomUser.objects.get(pk=ID)
+    context={'firstname':user.firstname,
+            'surname':user.surname,
+            'patronymic':user.patronymic,
+            'phonenumber':user.phonenumber,
+            'email':user.email }
+    return render(request,'index.html',context=context)
 def register(request):
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
