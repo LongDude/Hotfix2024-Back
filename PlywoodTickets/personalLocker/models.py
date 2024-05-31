@@ -1,6 +1,26 @@
 from django.db import models
-from django.contrib.auth.models import User
 
-class UserPersonalData(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-# Create your models here.
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+
+from .managers import CustomUserManager
+
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(_("email address"), unique=True)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    date_joined = models.DateTimeField(default=timezone.now)
+
+    firstname = models.TextField()
+    surname = models.TextField()
+    patronymic = models.TextField()
+    phonenumber = models.TextField()
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
+
+    objects = CustomUserManager()
+
+    def __str__(self):
+        return self.email
