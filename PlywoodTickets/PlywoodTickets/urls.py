@@ -23,21 +23,22 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
 ]
 
-urlpatterns += [
-    path('login/', include('login.urls')),
-]
-urlpatterns += [
-    path('', RedirectView.as_view(url='login/', permanent=True)),
-]
+# urlpatterns += [
+#     path('login/', include('login.urls')),
+# ]
+# urlpatterns += [
+#     path('', RedirectView.as_view(url='login/', permanent=True)),
+# ]
 
-urlpatterns += [
-    path('registration/', include('registration.urls')),
-]
-urlpatterns += [
-    path('', RedirectView.as_view(url='registration/', permanent=True)),
-]
+# urlpatterns += [
+#     path('registration/', include('registration.urls')),
+# ]
+# urlpatterns += [
+#     path('', RedirectView.as_view(url='registration/', permanent=True)),
+# ]
 
 urlpatterns += [
     path('personalLocker/', include('personalLocker.urls')),
