@@ -22,7 +22,12 @@ CREATE TABLE IF NOT EXISTS public.users
     id_user integer NOT NULL,
     login text,
     password text,
-    full_name text,
+    name text,
+    surname text,
+    year_birth date,
+    gender text,
+    phone text,
+    country text,
     PRIMARY KEY (id_user)
 );
 END;
