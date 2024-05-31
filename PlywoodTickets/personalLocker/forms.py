@@ -8,8 +8,8 @@ class UserRegistrationForm(forms.ModelForm):
     password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput)
 
     class Meta:
-        model = User
-        fields = ('username', 'first_name', 'email')
+        model = CustomUser
+        fields = ('firstname','surname','patronymic','phonenumber', 'email',)
 
     def clean_password2(self):
         cd = self.cleaned_data

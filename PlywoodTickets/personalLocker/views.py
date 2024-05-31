@@ -1,9 +1,36 @@
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, permissions
+from .models import CustomUser
+from .serializers import CustomUserSerializer
 from django.shortcuts import render
 from .forms import UserRegistrationForm
+from django.views import generic
+class UserApiView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def get(self, request, *args, **kwargs):
+        print(request.user.id)
+    def put(self, request, *args, **kwargs):
+        print(request.user.id)
+        user=CustomUser.objects.get(pk=request.user.id)
+        customUserData = {
+            'email': request.data.get("email")
+        }
+        customUser = CustomUserSerializer(user,data=customUserData)
+        if customUser.is_valid():
+            customUser.save()
+            return Response(customUser.data,status = status.HTTP_200_OK)
+        return Response(customUser.errors,status=status.HTTP_400_BAD_REQUEST)
 
 # Create your views here.
 def index(request):
+    print(request.user.id)
     return render(request,'index.html')
+# class UserData(generic.V):
+#     model = UserPersonalData
+#     def get_context_data(self, **kwargs):
+#         context = super(UserData, self).get_context_data(**kwargs)
+#         return context
 def register(request):
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)

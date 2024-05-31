@@ -1,4 +1,13 @@
+<form action="{% url 'update' %}" method="PUT">
+    {% csrf_token %}
+    <button type="submit">Update</button>
+</form>
 <form action="{% url 'logout' %}" method="post">
     {% csrf_token %}
     <button type="submit">Logout</button>
 </form>
+{% block content %}
+  <ul>
+    <li><strong>login:</strong> {{ lo }}</li>
+  </ul>
+{% endblock %}
