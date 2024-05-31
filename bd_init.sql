@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS public.flights
     id_flights integer NOT NULL,
     id_plane integer,
     country_plan text,
-    "to" text,
-    "from" text,
+    to_city text,
+    from_city text,
     start time with time zone,
     "end" time with time zone,
     stop integer,
@@ -25,65 +25,4 @@ CREATE TABLE IF NOT EXISTS public.users
     full_name text,
     PRIMARY KEY (id_user)
 );
-
-CREATE TABLE IF NOT EXISTS public.request_history
-(
-    "id_request " integer NOT NULL,
-    id_user integer,
-    "request " text,
-    PRIMARY KEY ("id_request ")
-);
-
-CREATE TABLE IF NOT EXISTS public.favorite_city
-(
-    city_name text NOT NULL,
-    id_user integer NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS public.city
-(
-    name text NOT NULL,
-    visible_count integer,
-    PRIMARY KEY (name)
-);
-
-ALTER TABLE IF EXISTS public.flights
-    ADD FOREIGN KEY ("to")
-    REFERENCES public.city (name) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
-
-
-ALTER TABLE IF EXISTS public.flights
-    ADD FOREIGN KEY ("from")
-    REFERENCES public.city (name) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
-
-
-ALTER TABLE IF EXISTS public.request_history
-    ADD FOREIGN KEY (id_user)
-    REFERENCES public.users (id_user) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
-
-
-ALTER TABLE IF EXISTS public.favorite_city
-    ADD FOREIGN KEY (id_user)
-    REFERENCES public.users (id_user) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
-
-
-ALTER TABLE IF EXISTS public.favorite_city
-    ADD FOREIGN KEY (city_name)
-    REFERENCES public.city (name) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
-
 END;
