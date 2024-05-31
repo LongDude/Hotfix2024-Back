@@ -80,9 +80,9 @@ WSGI_APPLICATION = 'PlywoodTickets.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'plywood_db',
-        'USER': 'root',
-        'PASSWORD': 'rootpass',
+        'NAME': 'flywood_db',
+        'USER': 'postgres',
+        'PASSWORD': '0000',
         'HOST': 'localhost',
         'PORT': '',
     }}
