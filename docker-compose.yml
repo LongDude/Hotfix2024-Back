@@ -1,0 +1,43 @@
+
+version: '3.1'
+
+services:
+  adminer:
+    image: adminer
+    depends_on:
+      - db
+    restart: always
+
+    network_mode: host
+    # ports:
+    #   - "8080:8080"
+    # networks:
+    #     mynet:
+    #       ipv4_address: 172.20.2.12
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+    volumes:
+      - mysql-data:/var/lib/postgres
+
+    network_mode: host
+    # ports:
+    #   - "5432:5432"
+    # networks:
+    #     mynet:
+    #       ipv4_address: 172.20.2.11
+
+volumes:
+  mysql-data:
+
+# networks:
+#  mynet:
+#     driver: bridge
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: 172.20.2.0/24
+#           gateway: 172.20.2.1
