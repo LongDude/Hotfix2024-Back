@@ -15,9 +15,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     firstname = models.TextField()
     surname = models.TextField()
-    patronymic = models.TextField()
+    patronymic = models.TextField(null=True)
     phonenumber = models.TextField()
-    gender = models.TextField(null=True)
+    gender = models.BooleanField(null=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

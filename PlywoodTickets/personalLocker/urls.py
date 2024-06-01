@@ -1,12 +1,14 @@
 from django.urls import path
 from django.urls import include
-from personalLocker.views import UserApiView,LoginApiView,LogoutApiView
+from personalLocker.views import *
+from rest_framework_simplejwt.views import TokenBlacklistView
 from . import views
 
 urlpatterns = [
     path('login/',LoginApiView.as_view()),
     path('logout/',LogoutApiView.as_view()),
+    path('user/',TokenUser.as_view()),
     path('', views.index, name='index'),
-    path('register/',views.register,name="register"),
+    path('register/',UserRegister.as_view()),
     path('',UserApiView.as_view(),name="update")
 ]

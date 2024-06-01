@@ -1,5 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, authenticate
 from .models import CustomUser
@@ -10,30 +13,54 @@ from django.views import generic
 from django.contrib.auth import login,logout, get_user
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 class LogoutApiView(APIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    @csrf_exempt
     def post(self, request, *args, **kwargs):
         print(request.user)
-        print(request.user.is_authenticated)
         logout(request)
+        # token = request.headers['Authorization']
+        # token=token.replace("Bearer ","")
+        # try:
+        #     print(token)
+        #     ptoken = AccessToken(token)
+        #     ptoken.blacklist()
+        # except Exception as e:
+        #     return Response({'error': 'Jopa'}, status=status.HTTP_400_BAD_REQUEST)
+        print(not request.user.is_authenticated)
+        return Response(not request.user.is_authenticated)
+
+        print(request.user.auth_token)
+        request.user.auth_token.delete()
         return Response(True)
+
+class TokenUser(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    @csrf_exempt
+    def get(self, request, *args, **keywords):
+        user=CustomUser.objects.get(pk=request.user.id)
+        cusUser = CustomUserSerializer(user)
+        return Response(cusUser.data)
+
 class LoginApiView(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     def post(self,request,*args,**kwargs):
+        data=request.data
         username = request.data["login"]
         password = request.data["password"]
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            request.session.set_expiry(86400) #sets the exp. value of the session
-            login(request, user)
-            authenticate(request,username=username,password=password)
-            customUser = CustomUserSerializer(user)
-            print(customUser.data)
-            return Response(customUser.data)
-        else:
-            return Response(None)
         
+        user = authenticate(request, username=username, password=password)
+        if user is None:
+            return Response(None)
+
+
+        refresh = AccessToken.for_user(user)
+        refresh.payload.update({'user_id': user.id, 'email': user.email})
+        return Response({"token":str(refresh)})        
+
 class UserApiView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     @csrf_exempt
@@ -60,17 +87,23 @@ def index(request):
             'email':user.email,
             'gender': user.gender }
     return render(request,'index.html',context=context)
-def register(request):
-    if request.method == 'POST':
-        user_form = UserRegistrationForm(request.POST)
-        if user_form.is_valid():
-            # Create a new user object but avoid saving it yet
-            new_user = user_form.save(commit=False)
-            # Set the chosen password
-            new_user.set_password(user_form.cleaned_data['password'])
-            # Save the User object
-            new_user.save()
-            return render(request, 'register_done.html', {'new_user': new_user})
-    else:
-        user_form = UserRegistrationForm()
-    return render(request, 'register.html', {'user_form': user_form})
+class UserRegister(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [permissions.AllowAny]
+    @csrf_exempt
+    def post(self,request,*args,**kwargs):
+        print(request.data)
+        password=request.data["password"]
+        user = CustomUserSerializer(data=request.data)
+        if user.is_valid():
+            user=CustomUser.objects.create()
+            user.set_password(password)
+            user=CustomUserSerializer(user,request.data)
+            if user.is_valid():
+                user.save()
+                return Response(True)
+            else:
+                CustomUser.objects.delete(user)
+                return Response(None)
+        else:
+            return Response(None)
