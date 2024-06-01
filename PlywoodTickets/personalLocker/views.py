@@ -30,7 +30,8 @@ def index(request):
             'surname':user.surname,
             'patronymic':user.patronymic,
             'phonenumber':user.phonenumber,
-            'email':user.email }
+            'email':user.email,
+            'gender': user.gender }
     return render(request,'index.html',context=context)
 def register(request):
     if request.method == 'POST':
