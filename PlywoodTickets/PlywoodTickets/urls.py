@@ -26,26 +26,12 @@ urlpatterns = [
     
 ]
 
-# urlpatterns += [
-#     path('login/', include('login.urls')),
-# ]
-# urlpatterns += [
-#     path('', RedirectView.as_view(url='login/', permanent=True)),
-# ]
-
-# urlpatterns += [
-#     path('registration/', include('registration.urls')),
-# ]
-# urlpatterns += [
-#     path('', RedirectView.as_view(url='registration/', permanent=True)),
-# ]
-
 urlpatterns += [
     path('personalLocker/', include('personalLocker.urls')),
 ]
-urlpatterns += [
-    path('', RedirectView.as_view(url='personalLocker/', permanent=True)),
-]
+# urlpatterns += [
+#     path('', RedirectView.as_view(url='personalLocker/', permanent=True)),
+# ]
 
 urlpatterns += [
     path('mainpage/', include('mainpage.urls')),
