@@ -16,6 +16,20 @@ from django.contrib.auth.decorators import login_required
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
+class UserRequest(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    @csrf_exempt
+    def get(self, request, *args, **kwargs):
+        user=CustomUser.objects.get(pk=request.user.id)
+        cusUser = CustomUserSerializer(user)
+        requests=cusUser.data["requests"]
+        return Response(requests)
+    def post(self,request,*args,**kwargs):
+        user=CustomUser.objects.get(pk=request.user.id)
+        cusUser = CustomUserSerializer(user)
+        cusUser.data["requests"].append(request.data)
+        return Response(True)
+
 class LogoutApiView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     @csrf_exempt

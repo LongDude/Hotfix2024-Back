@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.contrib.postgres.fields import ArrayField
 
 from .managers import CustomUserManager
 
@@ -18,6 +19,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     patronymic = models.TextField(null=True)
     phonenumber = models.TextField()
     gender = models.BooleanField(null=True)
+    requests = ArrayField(models.JSONField(null=True),null=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

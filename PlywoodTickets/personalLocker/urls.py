@@ -10,5 +10,6 @@ urlpatterns = [
     path('user/',TokenUser.as_view()),
     path('', views.index, name='index'),
     path('register/',UserRegister.as_view()),
-    path('change-profile/',UpdateApiView.as_view())
+    path('change-profile/',UpdateApiView.as_view()),
+    path('requests/',UserRequest.as_view())
 ]
