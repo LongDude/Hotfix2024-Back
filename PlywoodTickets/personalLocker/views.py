@@ -22,8 +22,13 @@ class UserRequest(APIView):
     def get(self, request, *args, **kwargs):
         user=CustomUser.objects.get(pk=request.user.id)
         cusUser = CustomUserSerializer(user)
+        print(cusUser.data)
         requests=cusUser.data["requests"]
-        return Response(requests)
+        print(requests)
+        if requests!=None:
+            return Response(requests)
+        else:
+            return Response([])
     def post(self,request,*args,**kwargs):
         user=CustomUser.objects.get(pk=request.user.id)
         cusUser = CustomUserSerializer(user)
