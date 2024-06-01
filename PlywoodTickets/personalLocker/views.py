@@ -6,10 +6,28 @@ from .serializers import CustomUserSerializer
 from django.shortcuts import render
 from .forms import UserRegistrationForm
 from django.views import generic
+from django.contrib.auth import authenticate, login
+class LoginApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        print(request.user.id)
+        return Response({"res1": True})
+    
+    def post(self,request,*args,**kwargs):
+        username = request.data["login"]
+        password = request.data["password"]
+        print(username,password)
+        user = authenticate(request, username=username, password=password)
+        print(user)
+        if user is not None:
+            login(request, user)
+            customUser = CustomUserSerializer(user)
+            print(customUser.data)
+            return Response(customUser.data)
+        else:
+            return Response(None)
+        
 class UserApiView(APIView):
     permission_classes = [permissions.IsAuthenticated]
-    #def get(self, request, *args, **kwargs):
-    #    print(request.user.id)
     def put(self, request, *args, **kwargs):
         print(request.user.id)
         user=CustomUser.objects.get(pk=request.user.id)

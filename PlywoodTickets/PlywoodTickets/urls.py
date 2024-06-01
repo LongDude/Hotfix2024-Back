@@ -27,17 +27,17 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path('personalLocker/', include('personalLocker.urls')),
+    path('api/', include('personalLocker.urls')),
 ]
 # urlpatterns += [
 #     path('', RedirectView.as_view(url='personalLocker/', permanent=True)),
 # ]
 
 urlpatterns += [
-    path('mainpage/', include('mainpage.urls')),
+    path('api/', include('mainpage.urls')),
 ]
-urlpatterns += [
-    path('', RedirectView.as_view(url='mainpage/', permanent=True)),
-]
+# urlpatterns += [
+#     path('', RedirectView.as_view(url='mainpage/', permanent=True)),
+# ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
