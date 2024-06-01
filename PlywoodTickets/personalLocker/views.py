@@ -52,7 +52,6 @@ class LoginApiView(APIView):
         print(request.data)
         username = request.data["login"]
         password = request.data["password"]
-        
         user = authenticate(request, username=username, password=password)
         print(user.is_authenticated)
         if user is None:
@@ -102,17 +101,9 @@ class UserRegister(APIView):
     @csrf_exempt
     def post(self,request,*args,**kwargs):
         print(request.data)
-        password=request.data["password"]
         user = CustomUserSerializer(data=request.data)
         if user.is_valid():
-            user=CustomUser.objects.create()
-            user.set_password(password)
-            user=CustomUserSerializer(user,request.data)
-            if user.is_valid():
-                user.save()
-                return Response(True)
-            else:
-                CustomUser.objects.delete(user)
-                return Response(None)
+            user.save()
+            return Response(True)
         else:
             return Response(None)
