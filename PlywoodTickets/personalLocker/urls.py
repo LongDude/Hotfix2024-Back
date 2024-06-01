@@ -10,5 +10,5 @@ urlpatterns = [
     path('user/',TokenUser.as_view()),
     path('', views.index, name='index'),
     path('register/',UserRegister.as_view()),
-    path('',UserApiView.as_view(),name="update")
+    path('change-profile/',UpdateApiView.as_view())
 ]

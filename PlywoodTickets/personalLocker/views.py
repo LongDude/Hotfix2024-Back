@@ -49,26 +49,35 @@ class LoginApiView(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     def post(self,request,*args,**kwargs):
         data=request.data
+        print(request.data)
         username = request.data["login"]
         password = request.data["password"]
         
         user = authenticate(request, username=username, password=password)
+        print(user.is_authenticated)
         if user is None:
             return Response(None)
 
 
         refresh = AccessToken.for_user(user)
         refresh.payload.update({'user_id': user.id, 'email': user.email})
+        print(refresh)
         return Response({"token":str(refresh)})        
 
-class UserApiView(APIView):
+class UpdateApiView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     @csrf_exempt
     def put(self, request, *args, **kwargs):
         print(request.user.id)
         user=CustomUser.objects.get(pk=request.user.id)
+        if user.check_password(request.data["password"]):
+            user.set_password(request.data["newpassword"])
         customUserData = {
-            'email': request.data.get("email")
+            'email':request.data['email'],
+            'firstname':request.data['firstname'],
+            'surname':request.data['surname'],
+            'phonenumber':request.data['phonenumber'],
+            'gender': request.data['gender']
         }
         customUser = CustomUserSerializer(user,data=customUserData)
         if customUser.is_valid():
