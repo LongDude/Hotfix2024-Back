@@ -1,25 +1,33 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, authenticate
 from .models import CustomUser
 from .serializers import CustomUserSerializer
 from django.shortcuts import render
 from .forms import UserRegistrationForm
 from django.views import generic
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login,logout, get_user
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+
+class LogoutApiView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    def post(self, request, *args, **kwargs):
+        print(request.user)
+        print(request.user.is_authenticated)
+        logout(request)
+        return Response(True)
 class LoginApiView(APIView):
-    def get(self, request, *args, **kwargs):
-        print(request.user.id)
-        return Response({"res1": True})
-    
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
     def post(self,request,*args,**kwargs):
         username = request.data["login"]
         password = request.data["password"]
-        print(username,password)
         user = authenticate(request, username=username, password=password)
-        print(user)
         if user is not None:
+            request.session.set_expiry(86400) #sets the exp. value of the session
             login(request, user)
+            authenticate(request,username=username,password=password)
             customUser = CustomUserSerializer(user)
             print(customUser.data)
             return Response(customUser.data)
@@ -28,6 +36,7 @@ class LoginApiView(APIView):
         
 class UserApiView(APIView):
     permission_classes = [permissions.IsAuthenticated]
+    @csrf_exempt
     def put(self, request, *args, **kwargs):
         print(request.user.id)
         user=CustomUser.objects.get(pk=request.user.id)
