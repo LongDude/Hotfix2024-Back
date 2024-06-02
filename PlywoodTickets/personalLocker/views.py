@@ -15,6 +15,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .serializers import *
 from .models import *
 import json
+import datetime
 import requests
 city=['Bangalore', 'Chennai', 'Delhi', 'Hyderabad', 'Kolkata', 'Mumbai']
 class Cities(APIView):
@@ -35,7 +36,7 @@ class FlightsHistory(APIView):
         else:
             Class=0
         city.sort()
-        print(request.data)
+        Date=datetime.datetime.fromtimestamp(int(Date)/1000).day
         if request.user.is_authenticated:
             print(request.user.id)
             UserHistory.objects.create(user_id=CustomUser.objects.get(pk=request.user.id),path=request.GET["path"],title=request.GET["title"]).save()
