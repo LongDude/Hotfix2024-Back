@@ -4,6 +4,7 @@ from typing import Optional
 
 import pandas as pd
 import tensorflow as tf
+import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 model = tf.keras.models.load_model('models/model.keras')
@@ -24,6 +25,7 @@ app = FastAPI()
 @app.get("/calculate")
 def calculate(f: int, t: int, d: int, e: int):
     vec = [f, t, d, e]
+    # print(f"{vec=}")
     vec = pd.DataFrame([vec], columns=['f', 't', 'd', 'e'])
     vec = pd.concat([vec]*8*5*3*10, ignore_index=True)
 
@@ -33,11 +35,31 @@ def calculate(f: int, t: int, d: int, e: int):
     vec = scaler.fit_transform(vec)
 
     preds = model.predict(vec)
-    best = preds.argmin(axis=1)
+    best = preds.argmin(axis=0)
+    # print(f"{best[0]=}")
+    # print(f"{vec.shape=} {preds.shape=} {best.shape=}")
 
-    result = pd.concat([df[best], preds[best]], axis=1)
+    # print(df.loc[best])
+    # print(preds[best])
+
+    # print()
+    # print(df.loc[best].to_numpy())
+    # print(df.loc[best].to_numpy().shape)
+    # print(preds[best])
+    # print(preds[best].shape)
+    # print()
+
+    result = np.concatenate((df.loc[best].to_numpy(), preds[best]), axis=1).flatten()
+
+    # best = best[0]
+    # preds = pd.DataFrame(preds[best])
+    # result = pd.concat([df.loc[best], preds], axis=1)
+
     # result.columns = ['airline', 'num_code', 'stop_type', 'time_taken', 'price']
+    print(result.tolist())
+    result = result.tolist()
 
+    # result = { 'price':42 }
     return result
 
 if __name__ == "__main__":
