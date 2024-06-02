@@ -19,8 +19,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     patronymic = models.TextField(null=True)
     phonenumber = models.TextField()
     gender = models.BooleanField(null=True)
-    path = ArrayField(models.TextField(null=True),null=True)
-    title= ArrayField(models.TextField(null=True),null=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
@@ -29,3 +27,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+class UserHistory(models.Model):
+    model_id = models.BigIntegerField(primary_key=True)
+    user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    path = models.TextField()
+    title = models.TextField()
+
+    def __str__(self):
+        return self.path + self.title
