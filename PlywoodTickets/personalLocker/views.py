@@ -23,7 +23,7 @@ class Cities(APIView):
     def get(self,request,*args,**kwargs):
         return Response(city)
 class FlightsHistory(APIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [permissions.AllowAny]
     @csrf_exempt
     def get(self,request,*args,**kwargs):
         From=request.GET["from"]
@@ -37,12 +37,14 @@ class FlightsHistory(APIView):
         city.sort()
         print(request.data)
         if request.user.is_authenticated:
+            print(request.user.id)
             UserHistory.objects.create(user_id=CustomUser.objects.get(pk=request.user.id),path=request.GET["path"],title=request.GET["title"]).save()
         # user = CustomUser.objects.get(pk=request.user.id)
         # history=UserHistory()
         response=requests.get("http://127.0.0.1:9000/calculate",params={"f":city.index(From),"t":city.index(To),"d":int(Date),"e":int(Class)})
-        print(*response)
-        return Response(response)
+        json_data = json.loads(json.loads(response.text))
+        print(json_data)
+        return JsonResponse(json_data,safe=False)
 
 class UserRequest(APIView):
     ''' TODO: '''
@@ -52,8 +54,9 @@ class UserRequest(APIView):
     def get(self, request, *args, **kwargs):
 
         models = UserHistory.objects.filter(user_id = request.user.id).values('path', 'title')
+        print(list(models))
         # paginator = Paginator(models, request.GET.get('page'))
-        paginator = Paginator(models, 1)
+        paginator = Paginator(models, 10)
         pageNumber = request.GET.get('page')
 
         try:
@@ -63,6 +66,7 @@ class UserRequest(APIView):
         except EmptyPage:
             pageNumber = paginator.num_pages
         models = paginator.page(pageNumber)
+        print(list(models))
         return JsonResponse(list(models), safe=False)
         # user = CustomUser.objects.get(pk=request.user.id)
         # custom_user = CustomUserSerializer(user)
