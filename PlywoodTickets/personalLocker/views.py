@@ -41,6 +41,7 @@ class FlightsHistory(APIView):
         # user = CustomUser.objects.get(pk=request.user.id)
         # history=UserHistory()
         response=requests.get("http://127.0.0.1:9000/calculate",params={"f":city.index(From),"t":city.index(To),"d":int(Date),"e":int(Class)})
+        print(*response)
         return Response(response)
 
 class UserRequest(APIView):
