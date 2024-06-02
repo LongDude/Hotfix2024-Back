@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .serializers import CustomUserSerializer
 from .models import CustomUser
+import json
 
 
 class UserRequest(APIView):
@@ -21,11 +22,13 @@ class UserRequest(APIView):
     def get(self, request, *args, **kwargs):
         user = CustomUser.objects.get(pk=request.user.id)
         custom_user = CustomUserSerializer(user)
-        requests = custom_user.data["requests"]
-        if requests != None:
-            return Response(requests)
-        else:
-            return Response([])
+        paths = custom_user.data["path"]
+        titles = custom_user.data["title"]
+        responce=[]
+        if paths!=None and titles!=None:
+            for path,title in zip(paths,titles):
+                responce.append({"path":path,"title":title})
+        return Response(responce)
 
     def post(self,request,*args,**kwargs):
         user = CustomUser.objects.get(pk=request.user.id)

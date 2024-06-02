@@ -19,7 +19,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     patronymic = models.TextField(null=True)
     phonenumber = models.TextField()
     gender = models.BooleanField(null=True)
-    requests = ArrayField(models.JSONField(null=True),null=True)
+    path = ArrayField(models.TextField(null=True),null=True)
+    title= ArrayField(models.TextField(null=True),null=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
