@@ -1,7 +1,6 @@
 from django.urls import path
 from django.urls import include
 from personalLocker.views import *
-from . import views
 
 urlpatterns = [
     path('login/',LoginApiView.as_view()),
@@ -9,5 +8,6 @@ urlpatterns = [
     path('user/',TokenUser.as_view()),
     path('register/',UserRegister.as_view()),
     path('change-profile/',UpdateApiView.as_view()),
-    path('requests/',UserRequest.as_view())
+    path('requests/',UserRequest.as_view()),
+    path('flights/',FlightsHistory.as_view())
 ]

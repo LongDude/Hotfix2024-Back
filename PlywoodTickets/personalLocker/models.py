@@ -29,7 +29,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 class UserHistory(models.Model):
-    model_id = models.BigIntegerField(primary_key=True)
     user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     path = models.TextField()
     title = models.TextField()

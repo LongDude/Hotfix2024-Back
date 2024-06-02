@@ -9,10 +9,23 @@ from django.shortcuts import render
 from django.contrib.auth import logout
 from django.views.decorators.csrf import csrf_exempt
 
-from .serializers import CustomUserSerializer
-from .models import CustomUser
+from .serializers import *
+from .models import *
 import json
-
+import requests
+class FlightsHistory(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    @csrf_exempt
+    def get(self,request,*args,**kwargs):
+        From=request.GET["from"]
+        To=request.GET["to"]
+        Date=request.GET["date"]
+        Class=request.GET["class"]
+        UserHistory.objects.create(user_id=CustomUser.objects.get(pk=request.user.id),path="/",title=From+" "+To).save()
+        # user = CustomUser.objects.get(pk=request.user.id)
+        # history=UserHistory()
+        #response=requests.get("http://127.0.0.1:9000/calculate",params={"from":From,"to":To,"day":Date,"economy":Class})
+        return Response([])
 
 class UserRequest(APIView):
     ''' TODO: '''
@@ -22,20 +35,19 @@ class UserRequest(APIView):
     def get(self, request, *args, **kwargs):
         user = CustomUser.objects.get(pk=request.user.id)
         custom_user = CustomUserSerializer(user)
-        paths = custom_user.data["path"]
-        titles = custom_user.data["title"]
+        histories=UserHistory.objects.filter(user_id=request.user.id)
         responce=[]
-        if paths!=None and titles!=None:
-            for path,title in zip(paths,titles):
-                responce.append({"path":path,"title":title})
+        print(request.data,len(histories))
+        try:
+            # paths = custom_user.data["path"]
+            # titles = custom_user.data["title"]
+            print(UserHistorSerializer(histories).data)
+        # if paths!=None and titles!=None:
+        #     for path,title in zip(paths,titles):
+        #         responce.append({"path":path,"title":title})
+        except:
+            pass
         return Response(responce)
-
-    def post(self,request,*args,**kwargs):
-        user = CustomUser.objects.get(pk=request.user.id)
-        custom_user = CustomUserSerializer(user)
-        custom_user.data["requests"].append(request.data)
-        return Response(True)
-
 
 class TokenUser(APIView):
     ''' GET: Возвращает пользователя по токену сессии '''

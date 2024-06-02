@@ -20,7 +20,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-class UserHistorSerializer(serializers.ModelSerializer):
+class UserHistorSerializer(serializers.ListSerializer):
     class Meta:
         model = UserHistory
         fields = ['path', 'title']
