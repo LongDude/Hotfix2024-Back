@@ -43,7 +43,7 @@ python manage.py runserver
 Теперь серверр Backend работает и ожидает запросов
 
 # Памятка
-[Фронт](https://github.com/LongDude/Hotfix2024-Front)
+Фронт: [https://github.com/LongDude/Hotfix2024-Front](https://github.com/LongDude/Hotfix2024-Front)
 
 Порт фронта: 3000
 
