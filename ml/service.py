@@ -16,15 +16,15 @@ for air in range(8):
             for time in range(10):
                 pregenerated.append([air, code, stop, time])
 
-df = pd.DataFrame(data, columns=['airline', 'num_code', 'stop_type', 'time_taken'])
+df = pd.DataFrame(pregenerated, columns=['airline', 'num_code', 'stop_type', 'time_taken'])
 
 app = FastAPI()
 
-# 'from', 'to', 'day', 'economy'
+# 'f', 't', 'd', 'e'
 @app.get("/calculate")
 def calculate(f: int, t: int, d: int, e: int):
     vec = [f, t, d, e]
-    vec = pd.DataFrame([vec], columns=['from', 'to', 'day', 'economy'])
+    vec = pd.DataFrame([vec], columns=['f', 't', 'd', 'e'])
     vec = pd.concat([vec]*8*5*3*10, ignore_index=True)
 
     vec = pd.concat([df, vec], axis=1)
@@ -33,7 +33,7 @@ def calculate(f: int, t: int, d: int, e: int):
     vec = scaler.fit_transform(vec)
 
     preds = model.predict(vec)
-    best = preds.argmax(axis=1)
+    best = preds.argmin(axis=1)
 
     result = pd.concat([df[best], preds[best]], axis=1)
     # result.columns = ['airline', 'num_code', 'stop_type', 'time_taken', 'price']
