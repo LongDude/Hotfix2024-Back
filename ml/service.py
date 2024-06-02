@@ -83,6 +83,7 @@ def calculate(f: int, t: int, d: int, e: int):
 
     mean = precalculated[(precalculated[0] == t) & (precalculated[1] == f) & (precalculated[3] == e)]
     print(mean.to_numpy().shape)
+    print(mean[4].to_numpy().astype('int'))
     print(mean[4].to_numpy().astype('int').flatten().tolist())
     # mean = mean['B']
 
