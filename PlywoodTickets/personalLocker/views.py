@@ -90,8 +90,9 @@ class UpdateApiView(APIView):
             'surname':request.data['lastName'],
             'phonenumber':request.data['phone'],
             'gender': request.data['gender'],
-            'password':request.data['newPassword']
+            'password':user.password
         }
+        
 
         customUser = CustomUserSerializer(user,data=customUserData)
 
