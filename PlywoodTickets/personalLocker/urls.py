@@ -9,5 +9,6 @@ urlpatterns = [
     path('register/',UserRegister.as_view()),
     path('change-profile/',UpdateApiView.as_view()),
     path('requests/',UserRequest.as_view()),
-    path('flights/',FlightsHistory.as_view())
+    path('flights/',FlightsHistory.as_view()),
+    path('cities/',Cities.as_view())
 ]

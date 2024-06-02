@@ -13,24 +13,28 @@ from .serializers import *
 from .models import *
 import json
 import requests
+city=['Bangalore', 'Chennai', 'Delhi', 'Hyderabad', 'Kolkata', 'Mumbai']
+class Cities(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    @csrf_exempt
+    def get(self,request,*args,**kwargs):
+        return Response(city)
 class FlightsHistory(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
     @csrf_exempt
     def get(self,request,*args,**kwargs):
         From=request.GET["from"]
         To=request.GET["to"]
         Date=request.GET["date"]
         Class=request.GET["class"]
-        city=[
-		'Bangalore', 'Chennai', 'Delhi', 'Hyderabad', 'Kolkata', 'Mumbai'
-	    ]
         if Class=="Эконом":
             Class=1
         else:
             Class=0
         city.sort()
         print(request.data)
-        UserHistory.objects.create(user_id=CustomUser.objects.get(pk=request.user.id),path="/",title=From+" "+To).save()
+        if request.user.is_authenticated:
+            UserHistory.objects.create(user_id=CustomUser.objects.get(pk=request.user.id),path=request.GET["path"],title=request.GET["title"]).save()
         # user = CustomUser.objects.get(pk=request.user.id)
         # history=UserHistory()
         response=requests.get("http://127.0.0.1:9000/calculate",params={"f":city.index(From),"t":city.index(To),"d":int(Date),"e":int(Class)})
@@ -76,16 +80,17 @@ class UpdateApiView(APIView):
     @csrf_exempt
     def put(self, request, *args, **kwargs):
         user=CustomUser.objects.get(pk=request.user.id)
-
+        print(request.data)
         if user.check_password(request.data["password"]):
-            user.set_password(request.data["newpassword"])
+            user.set_password(request.data["newPassword"])
 
         customUserData = {
-            'email':request.data['email'],
-            'firstname':request.data['firstname'],
-            'surname':request.data['surname'],
-            'phonenumber':request.data['phonenumber'],
-            'gender': request.data['gender']
+            'email':request.data['login'],
+            'firstname':request.data['firstName'],
+            'surname':request.data['lastName'],
+            'phonenumber':request.data['phone'],
+            'gender': request.data['gender'],
+            'password':request.data['newPassword']
         }
 
         customUser = CustomUserSerializer(user,data=customUserData)
@@ -94,7 +99,7 @@ class UpdateApiView(APIView):
             customUser.save()
             return Response(customUser.data,status = status.HTTP_200_OK)
 
-        return Response(customUser.errors,status=status.HTTP_400_BAD_REQUEST)
+        return Response(None,status=status.HTTP_200_OK)
 
 
 class UserRegister(APIView):
