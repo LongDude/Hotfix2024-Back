@@ -4,6 +4,14 @@ psycopg2-binary
 django-cors-headers
 djangorestframework-simplejwt
 
+fastapi
+uvicorn
+
+pandas
+tensorflow
+scikit-learn
+openpyxl
+
 # ai
 #langchain
 #requests
