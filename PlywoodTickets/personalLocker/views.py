@@ -1,6 +1,7 @@
 from rest_framework import status, permissions
 from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework.response import Response 
+from django.http.response import JsonResponse
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, authenticate
 from rest_framework_simplejwt.tokens import AccessToken
@@ -8,6 +9,8 @@ from rest_framework_simplejwt.tokens import AccessToken
 from django.shortcuts import render
 from django.contrib.auth import logout
 from django.views.decorators.csrf import csrf_exempt
+from django.core.serializers import serialize
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .serializers import *
 from .models import *
@@ -46,21 +49,26 @@ class UserRequest(APIView):
 
     @csrf_exempt
     def get(self, request, *args, **kwargs):
-        user = CustomUser.objects.get(pk=request.user.id)
-        custom_user = CustomUserSerializer(user)
-        histories=UserHistory.objects.filter(user_id=request.user.id)
-        responce=[]
-        print(request.data,len(histories))
+
+        models = UserHistory.objects.filter(user_id = request.user.id).values('path', 'title')
+        # paginator = Paginator(models, request.GET.get('page'))
+        paginator = Paginator(models, 1)
+        pageNumber = request.GET.get('page')
+
         try:
-            # paths = custom_user.data["path"]
-            # titles = custom_user.data["title"]
-            print(UserHistorSerializer(histories).data)
-        # if paths!=None and titles!=None:
-        #     for path,title in zip(paths,titles):
-        #         responce.append({"path":path,"title":title})
-        except:
-            pass
-        return Response(responce)
+            paginatedPage = paginator.page(pageNumber)
+        except PageNotAnInteger:
+            pageNumber = 1
+        except EmptyPage:
+            pageNumber = paginator.num_pages
+        models = paginator.page(pageNumber)
+        return JsonResponse(list(models), safe=False)
+        # user = CustomUser.objects.get(pk=request.user.id)
+        # custom_user = CustomUserSerializer(user)
+
+        # histories=UserHistory.objects.filter(user_id=request.user.id)
+
+        # return JsonResponse(list(histories.values("path", "title")), safe=False)
 
 class TokenUser(APIView):
     ''' GET: Возвращает пользователя по токену сессии '''
