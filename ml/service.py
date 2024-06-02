@@ -10,21 +10,21 @@ from sklearn.preprocessing import StandardScaler
 import json
 
 time_taken_bins = {
-    0: 'min: 50, max: 340',
-    1: 'min: 345, max: 635',
-    2: 'min: 640, max: 930',
-    3: 'min: 935, max: 1225',
-    4: 'min: 1230, max: 1515',
-    5: 'min: 1520, max: 1810',
-    6: 'min: 1815, max: 2105',
-    7: 'min: 2110, max: 2400',
-    8: 'min: 2425, max: 2670',
-    9: 'min: 2750, max: 2990'
+    0: [1, 6],
+    1: [6, 11],
+    2: [11, 15],
+    3: [15, 20],
+    4: [20, 25],
+    5: [25, 30],
+    6: [30, 35],
+    7: [35, 40],
+    8: [40, 45],
+    9: [45, 50]
 }
 
 air_bins = {0: 'Air India', 1: 'AirAsia', 2: 'GO FIRST', 3: 'Indigo', 4: 'SpiceJet', 5: 'StarAir', 6: 'Trujet', 7: 'Vistara'}
 city_bins = {0: 'Bangalore', 1: 'Chennai', 2: 'Delhi', 3: 'Hyderabad', 4: 'Kolkata', 5: 'Mumbai'}
-stop_bins = {0: '1-stop', 1: '2+-stop', 2: 'non-stop'}
+stop_bins = {0: '1 пересадка', 1: 'несколько пересадок', 2: 'без пересадок'}
 
 
 model = tf.keras.models.load_model('models/model.keras')
